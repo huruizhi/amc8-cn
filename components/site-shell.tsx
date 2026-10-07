@@ -4,6 +4,7 @@ import {
   BarChart3,
   CheckCircle2,
   FileText,
+  GraduationCap,
   Home,
   RotateCcw,
   Target,
@@ -15,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 
 const navigation = [
   { label: "首页", icon: Home, href: "/" },
+  { label: "学习路径", icon: GraduationCap, href: "/learn" },
   { label: "按年份", icon: FileText, href: "/years" },
   { label: "专项练习", icon: Target, href: "/custom" },
   { label: "学习分析", icon: BarChart3, href: "/analysis" },
@@ -85,7 +87,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-card/96 px-2 py-2 backdrop-blur-xl lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-border bg-card/96 px-2 py-2 backdrop-blur-xl lg:hidden"
         aria-label="移动端导航"
       >
         {navigation.map(({ label, icon: Icon, href }) => {

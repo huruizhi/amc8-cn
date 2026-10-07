@@ -32,8 +32,13 @@ export type QuestionRecord = {
   corrected: boolean;
 };
 
+export type LessonRecord = {
+  completedAt: string | null;
+};
+
 export type ProgressState = {
   questions: Record<string, QuestionRecord>;
+  lessons: Record<string, LessonRecord>;
 };
 
 type ProgressContextValue = {
@@ -41,12 +46,13 @@ type ProgressContextValue = {
   ready: boolean;
   submit: (questionId: string, answer: string, correct: boolean) => void;
   reveal: (questionId: string) => void;
+  completeLesson: (lessonId: string) => void;
   exportBackup: () => string;
   importBackup: (serialized: string) => void;
 };
 
 const STORAGE_KEY = "amc8-cn-progress-v1";
-const EMPTY_PROGRESS: ProgressState = { questions: {} };
+const EMPTY_PROGRESS: ProgressState = { questions: {}, lessons: {} };
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 
@@ -56,14 +62,22 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setProgress(JSON.parse(stored) as ProgressState);
-      } catch {
-        window.localStorage.removeItem(STORAGE_KEY);
+    const timer = window.setTimeout(() => {
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as Partial<ProgressState>;
+          setProgress({
+            questions: parsed.questions ?? {},
+            lessons: parsed.lessons ?? {},
+          });
+        } catch {
+          window.localStorage.removeItem(STORAGE_KEY);
+        }
       }
-    }
-    setReady(true);
+      setReady(true);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -92,18 +106,46 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const completeLesson = useCallback((lessonId: string) => {
+    setProgress((current) => ({
+      ...current,
+      lessons: {
+        ...current.lessons,
+        [lessonId]: {
+          completedAt:
+            current.lessons[lessonId]?.completedAt ?? new Date().toISOString(),
+        },
+      },
+    }));
+  }, []);
+
   const exportBackup = useCallback(
     () => exportProgressBackup(progress),
     [progress],
   );
 
   const importBackup = useCallback((serialized: string) => {
-    setProgress(importProgressBackup(serialized));
+    const restored = importProgressBackup(serialized) as {
+      questions: ProgressState["questions"];
+      lessons?: ProgressState["lessons"];
+    };
+    setProgress({
+      questions: restored.questions,
+      lessons: restored.lessons ?? {},
+    });
   }, []);
 
   const value = useMemo(
-    () => ({ progress, ready, submit, reveal, exportBackup, importBackup }),
-    [progress, ready, submit, reveal, exportBackup, importBackup],
+    () => ({
+      progress,
+      ready,
+      submit,
+      reveal,
+      completeLesson,
+      exportBackup,
+      importBackup,
+    }),
+    [progress, ready, submit, reveal, completeLesson, exportBackup, importBackup],
   );
 
   return (

@@ -4,7 +4,6 @@ import {
   ArrowDownToLine,
   ArrowRight,
   ArrowUpFromLine,
-  BarChart3,
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
@@ -16,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { questions, topicLabels } from "@/lib/content/questions";
+import { lessons } from "@/lib/content/lessons";
 import { calculateCategoryMastery } from "@/lib/domain/mastery.js";
 
 const skills = ["计算", "建模", "找规律", "逻辑推理", "分类枚举", "空间想象"];
@@ -37,6 +37,9 @@ export default function AnalysisPage() {
   );
   const corrected = answered.filter((record) => record.corrected);
   const now = new Date().toISOString();
+  const completedLessons = lessons.filter(
+    (lesson) => progress.lessons[lesson.id]?.completedAt,
+  );
 
   function downloadBackup() {
     const blob = new Blob([exportBackup()], { type: "application/json" });
@@ -77,6 +80,15 @@ export default function AnalysisPage() {
           suffix={answered.length ? `${firstCorrect.length} 题首次答对` : "完成题目后显示"}
         />
         <MetricCard label="已订正" value={`${corrected.length}`} suffix="保留首次错误记录" />
+      </section>
+
+      <section className="mb-5 flex flex-col gap-4 rounded-[24px] border border-teal/15 bg-teal-soft/65 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div>
+          <p className="text-sm font-semibold text-teal-ink">学习路径</p>
+          <h2 className="mt-1 font-serif text-xl font-bold text-ink">已完成 {completedLessons.length} / {lessons.length} 课</h2>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">完成课程中的基础练习后再标记本课，方便家长了解孩子是否真正走完学习步骤。</p>
+        </div>
+        <Button asChild variant="outline" className="shrink-0 bg-white"><Link href="/learn">查看学习路径 <ArrowRight className="size-4" /></Link></Button>
       </section>
 
       <section className="rounded-[24px] border border-border bg-card p-5 shadow-sm sm:p-7">

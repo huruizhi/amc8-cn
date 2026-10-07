@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Filter, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";

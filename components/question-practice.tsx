@@ -44,15 +44,21 @@ function saveLocalReport(questionId: string, type: string, detail: string) {
   window.localStorage.setItem(key, JSON.stringify(current));
 }
 
-export function QuestionPractice({
-  question,
-  publishedNumbers,
-  queue,
-}: {
+type QuestionPracticeProps = {
   question: Question;
   publishedNumbers: number[];
   queue: { id: string; year: number; number: number }[];
-}) {
+};
+
+export function QuestionPractice(props: QuestionPracticeProps) {
+  return <QuestionPracticeView key={props.question.id} {...props} />;
+}
+
+function QuestionPracticeView({
+  question,
+  publishedNumbers,
+  queue,
+}: QuestionPracticeProps) {
   const { progress, submit, reveal } = useProgress();
   const [selected, setSelected] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
@@ -63,13 +69,6 @@ export function QuestionPractice({
   const [reportSent, setReportSent] = useState(false);
   const [reportSubmitting, setReportSubmitting] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
-
-  useEffect(() => {
-    setSelected("");
-    setSubmitted(null);
-    setShowSolution(false);
-    setEnglishOpen(false);
-  }, [question.id]);
 
   const record = progress.questions[question.id];
   const isCorrect = submitted === question.answer;

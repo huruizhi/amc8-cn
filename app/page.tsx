@@ -3,6 +3,7 @@
 import {
   ArrowRight,
   BookOpen,
+  GraduationCap,
   Hash,
   PieChart,
   Sigma,
@@ -16,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getYearQuestions, questions, type Topic } from "@/lib/content/questions";
+import { lessons } from "@/lib/content/lessons";
 
 const topicIcons = {
   几何: Triangle,
@@ -49,6 +51,11 @@ export default function HomePage() {
   const progressPercent = newestQuestions.length
     ? Math.round((completedNewest.length / newestQuestions.length) * 100)
     : 0;
+  const completedLessons = lessons.filter(
+    (lesson) => progress.lessons[lesson.id]?.completedAt,
+  );
+  const nextLesson =
+    lessons.find((lesson) => !progress.lessons[lesson.id]?.completedAt) ?? lessons[0];
 
   return (
     <div className="mx-auto max-w-[1120px]">
@@ -120,6 +127,20 @@ export default function HomePage() {
               </div>
             </dl>
           </div>
+        </div>
+      </section>
+
+      <section className="mb-6 rounded-[24px] border border-teal/20 bg-teal-soft/65 p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white text-teal"><GraduationCap className="size-5" /></span>
+            <div>
+              <p className="text-sm font-semibold text-teal-ink">四年级自学路线</p>
+              <h2 className="mt-1 font-serif text-xl font-bold text-ink">{nextLesson.title}</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">每课都有例题、分步讲解、基础练习和对应真题。已完成 {completedLessons.length} / {lessons.length} 课。</p>
+            </div>
+          </div>
+          <Button asChild variant="outline" className="shrink-0 bg-white"><Link href={`/learn/${nextLesson.id}`}>进入学习路径 <ArrowRight className="size-4" /></Link></Button>
         </div>
       </section>
 

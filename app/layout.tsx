@@ -4,8 +4,8 @@ import { SiteShell } from "@/components/site-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AMC 8 中文真题练习",
-  description: "中英双语 AMC 8 历年真题、专项练习与学习分析。",
+  title: "AMC 8 中文学习站",
+  description: "面向中文学习者的 AMC 8 学习路径、例题讲解、双语真题与学习分析。",
   robots: {
     index: false,
     follow: false,
