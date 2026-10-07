@@ -37,6 +37,11 @@ export const prealgebraChapterLessons: Lesson[] = [
     skills: ["计算", "找规律"],
     goals: ["理解幂的含义", "熟悉常见平方数", "会用同底数幂的简单规律"],
     concepts: ["底数与指数", "平方", "幂的运算"],
+    keyPoints: [
+      { term: "aⁿ", explanation: "表示 n 个 a 相乘；a 是底数，n 是指数。" },
+      { term: "同底数相乘", explanation: "aᵐ × aⁿ = aᵐ⁺ⁿ，底数不变，指数相加。" },
+      { term: "数量级", explanation: "指数增加时，数值可能快速变大，先估算再精算可以避免看错。" },
+    ],
     example: example("同底数幂相乘", "3² × 3³ 等于多少？", [
       "同底数相乘时，指数相加：3² × 3³ = 3⁵。",
       "3⁵ = 3 × 3 × 3 × 3 × 3 = 243。",
@@ -63,6 +68,11 @@ export const prealgebraChapterLessons: Lesson[] = [
     skills: ["计算", "估算"],
     goals: ["会对齐小数点进行运算", "理解小数和分数的关系", "能判断小数答案的数量级"],
     concepts: ["位值", "小数运算", "小数与分数"],
+    keyPoints: [
+      { term: "位值", explanation: "小数点右边第一位是十分位，第二位是百分位；运算时小数点要对齐。" },
+      { term: "乘以 10、100", explanation: "小数点分别向右移动 1 位、2 位；除以 10、100 时向左移动。" },
+      { term: "估算检查", explanation: "先判断答案大约应该在什么范围，再检查精确计算的结果。" },
+    ],
     example: example("对齐小数点", "1.2 + 0.35 等于多少？", [
       "把 1.2 写成 1.20，使两个小数的小数点对齐。",
       "1.20 + 0.35 = 1.55。",
@@ -89,6 +99,11 @@ export const prealgebraChapterLessons: Lesson[] = [
     skills: ["计算", "估算"],
     goals: ["熟悉常见完全平方数", "理解平方与平方根互为逆运算", "能估计非完全平方数的平方根"],
     concepts: ["平方根", "完全平方数", "平方与逆运算"],
+    keyPoints: [
+      { term: "平方根", explanation: "√n 表示平方后等于 n 的非负数；例如 √49 = 7。" },
+      { term: "夹逼估计", explanation: "若 7² < n < 8²，就能得到 7 < √n < 8。" },
+      { term: "图形联系", explanation: "正方形面积已知时，边长等于面积的平方根。" },
+    ],
     example: example("由面积求边长", "正方形面积是 64 平方厘米，边长是多少？", [
       "正方形面积 = 边长 × 边长，也就是边长的平方。",
       "因为 8² = 64，所以 64 的平方根是 8。",
@@ -115,6 +130,11 @@ export const prealgebraChapterLessons: Lesson[] = [
     skills: ["空间想象", "建模", "计算"],
     goals: ["识别直角三角形的斜边", "会使用 a²+b²=c²", "能用常见勾股数组检查答案"],
     concepts: ["直角三角形", "斜边", "勾股定理"],
+    keyPoints: [
+      { term: "斜边", explanation: "直角所对的边是斜边，也是直角三角形中最长的一边。" },
+      { term: "勾股定理", explanation: "两条直角边 a、b 和斜边 c 满足 a² + b² = c²。" },
+      { term: "常见勾股数", explanation: "3-4-5、5-12-13、6-8-10 可以帮助你快速检查答案。" },
+    ],
     example: example("3-4-5 三角形", "直角三角形两条直角边长为 3 和 4，斜边是多少？", [
       "勾股定理是 3² + 4² = c²。",
       "9 + 16 = 25，所以 c² = 25。",

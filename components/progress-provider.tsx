@@ -34,6 +34,13 @@ export type QuestionRecord = {
 
 export type LessonRecord = {
   completedAt: string | null;
+  exercises?: Record<string, LessonExerciseRecord>;
+};
+
+export type LessonExerciseRecord = {
+  answer: string;
+  correct: boolean;
+  submittedAt: string;
 };
 
 export type ProgressState = {
@@ -46,6 +53,7 @@ type ProgressContextValue = {
   ready: boolean;
   submit: (questionId: string, answer: string, correct: boolean) => void;
   reveal: (questionId: string) => void;
+  submitLessonExercise: (lessonId: string, exerciseId: string, answer: string, correct: boolean) => void;
   completeLesson: (lessonId: string) => void;
   exportBackup: () => string;
   importBackup: (serialized: string) => void;
@@ -119,6 +127,32 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const submitLessonExercise = useCallback(
+    (lessonId: string, exerciseId: string, answer: string, correct: boolean) => {
+      setProgress((current) => {
+        const lesson = current.lessons[lessonId] ?? { completedAt: null };
+        return {
+          ...current,
+          lessons: {
+            ...current.lessons,
+            [lessonId]: {
+              ...lesson,
+              exercises: {
+                ...(lesson.exercises ?? {}),
+                [exerciseId]: {
+                  answer,
+                  correct,
+                  submittedAt: new Date().toISOString(),
+                },
+              },
+            },
+          },
+        };
+      });
+    },
+    [],
+  );
+
   const exportBackup = useCallback(
     () => exportProgressBackup(progress),
     [progress],
@@ -141,11 +175,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       ready,
       submit,
       reveal,
+      submitLessonExercise,
       completeLesson,
       exportBackup,
       importBackup,
     }),
-    [progress, ready, submit, reveal, completeLesson, exportBackup, importBackup],
+    [progress, ready, submit, reveal, submitLessonExercise, completeLesson, exportBackup, importBackup],
   );
 
   return (

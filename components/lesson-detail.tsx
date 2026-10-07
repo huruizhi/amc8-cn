@@ -7,26 +7,47 @@ import { useMemo, useState } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Lesson } from "@/lib/content/lessons";
+import { getLesson, type Lesson } from "@/lib/content/lessons";
+import { evaluateLessonMastery } from "@/lib/domain/lesson-mastery.js";
 import { getQuestion } from "@/lib/content/questions";
 
 export function LessonDetail({ lesson }: { lesson: Lesson }) {
-  const { progress, completeLesson } = useProgress();
+  const { progress, submitLessonExercise, completeLesson } = useProgress();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [completedNow, setCompletedNow] = useState(false);
 
-  const answeredCount = Object.keys(submitted).length;
-  const allAnswered = answeredCount === lesson.exercises.length;
+  const allExercises = [...lesson.exercises, ...(lesson.checkpointExercises ?? [])];
+  const storedExerciseRecords = progress.lessons[lesson.id]?.exercises ?? {};
+  const answeredCount = allExercises.filter(
+    (exercise) => submitted[exercise.id] || storedExerciseRecords[exercise.id],
+  ).length;
+  const mastery = evaluateLessonMastery(allExercises, {
+    ...storedExerciseRecords,
+    ...Object.fromEntries(
+      Object.entries(submitted).map(([exerciseId]) => [exerciseId, {
+        answer: answers[exerciseId] ?? "",
+        correct: answers[exerciseId] === allExercises.find((exercise) => exercise.id === exerciseId)?.answer,
+        submittedAt: new Date().toISOString(),
+      }]),
+    ),
+  });
   const isComplete = Boolean(progress.lessons[lesson.id]?.completedAt || completedNow);
   const linkedQuestions = useMemo(
     () => lesson.linkedQuestionIds.map((id) => getQuestion(...id.split("-").map(Number) as [number, number])).filter(Boolean),
     [lesson.linkedQuestionIds],
   );
+  const prerequisiteLessons = (lesson.prerequisites ?? [])
+    .map((id) => getLesson(id))
+    .filter((item): item is Lesson => Boolean(item));
 
   function submitExercise(exerciseId: string) {
     if (!answers[exerciseId]) return;
     setSubmitted((current) => ({ ...current, [exerciseId]: true }));
+    const exercise = allExercises.find((item) => item.id === exerciseId);
+    if (exercise) {
+      submitLessonExercise(lesson.id, exerciseId, answers[exerciseId], answers[exerciseId] === exercise.answer);
+    }
   }
 
   function markComplete() {
@@ -57,6 +78,20 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
         </div>
       </header>
 
+      {prerequisiteLessons.length ? (
+        <section className="mb-5 rounded-[24px] border border-amber/25 bg-amber/10 p-5 sm:p-7">
+          <p className="text-sm font-semibold text-[#80520b]">建议先掌握</p>
+          <p className="mt-2 text-sm leading-6 text-[#80520b]/80">如果下面的内容还不熟，可以先复习前置章节，再回来学习本章。</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {prerequisiteLessons.map((item) => (
+              <Button asChild key={item.id} variant="outline" size="sm" className="border-amber/40 bg-white/70">
+                <Link href={`/learn/${item.id}`}>第 {item.order} 章 · {item.title}<ArrowRight className="size-3.5" /></Link>
+              </Button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="mb-5 rounded-[24px] border border-teal/15 bg-teal-soft/70 p-5 sm:p-7">
         <div className="flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white text-teal"><Lightbulb className="size-5" /></span>
@@ -68,6 +103,20 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
           </div>
         </div>
       </section>
+
+      {lesson.keyPoints?.length ? (
+        <section className="mb-5 rounded-[24px] border border-border bg-card p-5 shadow-sm sm:p-7">
+          <p className="text-sm font-semibold text-teal">先记住这些</p>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {lesson.keyPoints.map((point) => (
+              <article key={point.term} className="rounded-2xl bg-secondary/45 p-4">
+                <h2 className="font-semibold text-ink">{point.term}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{point.explanation}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mb-5 rounded-[24px] border border-border bg-card p-5 shadow-sm sm:p-7">
         <p className="text-sm font-semibold text-teal">第一步 · 看懂例题</p>
@@ -90,13 +139,16 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
             <p className="text-sm font-semibold text-teal">第二步 · 试一试</p>
             <h2 className="mt-1 font-serif text-2xl font-bold text-ink">分层练习</h2>
           </div>
-          <span className="text-sm text-muted-foreground">已完成 {answeredCount} / {lesson.exercises.length}</span>
+          <span className="text-sm text-muted-foreground">已提交 {answeredCount} / {allExercises.length} · 正确率 {Math.round(mastery.accuracy * 100)}%</span>
         </div>
         <div className="space-y-5">
-          {lesson.exercises.map((exercise, index) => {
-            const isSubmitted = submitted[exercise.id];
-            const isCorrect = answers[exercise.id] === exercise.answer;
-            const exerciseLevel = exercise.level ?? (index < 3 ? "基础" : "提升");
+          {allExercises.map((exercise, index) => {
+            const storedRecord = storedExerciseRecords[exercise.id];
+            const isSubmitted = Boolean(submitted[exercise.id] || storedRecord);
+            const selectedAnswer = answers[exercise.id] ?? storedRecord?.answer;
+            const isCorrect = storedRecord?.correct ?? selectedAnswer === exercise.answer;
+            const isCheckpoint = index >= lesson.exercises.length;
+            const exerciseLevel = isCheckpoint ? "学完检查" : (exercise.level ?? (index < 3 ? "基础" : "提升"));
             return (
               <article key={exercise.id} className="rounded-2xl border border-border/80 bg-secondary/25 p-4 sm:p-5">
                 <div className="flex items-start justify-between gap-3">
@@ -109,7 +161,7 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
                       key={item.label}
                       type="button"
                       onClick={() => !isSubmitted && setAnswers((current) => ({ ...current, [exercise.id]: item.label }))}
-                      className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors ${answers[exercise.id] === item.label ? "border-primary bg-primary/10 text-primary" : "border-border bg-white hover:border-primary/40"} ${isSubmitted && item.label === exercise.answer ? "border-teal bg-teal-soft text-teal-ink" : ""}`}
+                      className={`rounded-xl border px-4 py-3 text-left text-sm transition-colors ${selectedAnswer === item.label ? "border-primary bg-primary/10 text-primary" : "border-border bg-white hover:border-primary/40"} ${isSubmitted && item.label === exercise.answer ? "border-teal bg-teal-soft text-teal-ink" : ""}`}
                     >
                       <span className="mr-2 font-semibold">{item.label}.</span>{item.value}
                     </button>
@@ -151,8 +203,8 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
           <p className="font-semibold">完成本章后，学习路径会记住你的进度。</p>
           <p className="mt-1 text-sm text-white/70">你可以随时回来复习，不会影响真题的首次作答记录。</p>
         </div>
-        <Button onClick={markComplete} disabled={!allAnswered || isComplete} className="shrink-0 bg-teal text-white hover:bg-teal/90">
-          {isComplete ? "本章已完成" : allAnswered ? "标记本章完成" : `还需完成 ${lesson.exercises.length - answeredCount} 题`}
+        <Button onClick={markComplete} disabled={!mastery.mastered || isComplete} className="shrink-0 bg-teal text-white hover:bg-teal/90">
+          {isComplete ? "本章已完成" : mastery.mastered ? "标记本章完成" : mastery.allSubmitted ? "请订正错题后再完成本章" : `还需完成 ${allExercises.length - answeredCount} 题`}
         </Button>
       </div>
     </div>

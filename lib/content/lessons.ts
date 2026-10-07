@@ -1,4 +1,5 @@
 import type { Topic } from "./questions";
+import { chapterCheckpoints } from "./chapter-checkpoints";
 import { additionalLessons } from "./lessons-expanded";
 import { prealgebraChapterLessons } from "./prealgebra-lessons";
 
@@ -27,6 +28,8 @@ export type Lesson = {
   skills: string[];
   goals: string[];
   concepts: string[];
+  keyPoints?: { term: string; explanation: string }[];
+  prerequisites?: string[];
   example: {
     title: string;
     prompt: string;
@@ -34,6 +37,7 @@ export type Lesson = {
     answer: string;
   };
   exercises: LessonExercise[];
+  checkpointExercises?: LessonExercise[];
   linkedQuestionIds: string[];
   sourceFiles: string[];
 };
@@ -609,6 +613,82 @@ function chapter(
   };
 }
 
+const chapterKeyPoints: Record<string, { term: string; explanation: string }[]> = {
+  "order-estimation": [
+    { term: "运算顺序", explanation: "先括号，再乘除，最后加减；同一级运算按从左到右计算。" },
+    { term: "估算", explanation: "先把数换成接近的整十或整百，判断答案大致范围。" },
+    { term: "验算", explanation: "用逆运算或数量级重新检查，及时发现小数点和符号错误。" },
+  ],
+  "number-theory": [
+    { term: "因数和倍数", explanation: "若 a 能整除 b，那么 a 是 b 的因数，b 是 a 的倍数。" },
+    { term: "质数", explanation: "质数只有 1 和它本身两个正因数；判断时只需尝试较小的因数。" },
+    { term: "余数", explanation: "除法中的余数必须小于除数，周期问题通常先找余数。" },
+  ],
+  fractions: [
+    { term: "单位 1", explanation: "先确定题目中的整体是谁，再判断分数表示整体的哪一部分。" },
+    { term: "通分", explanation: "分母不同的分数相加减前，要先改写成相同分母。" },
+    { term: "分数大小", explanation: "可以通分、转成小数，或比较它们与 1/2、1 的关系。" },
+  ],
+  algebra: [
+    { term: "设未知数", explanation: "先用字母表示未知量，并写清楚它代表什么和使用什么单位。" },
+    { term: "等量关系", explanation: "把题目中的‘一共’‘相差’‘几倍’翻译成等式或不等式。" },
+    { term: "逆运算", explanation: "解方程时保持两边平衡，先加减、再乘除，最后代回原式检查。" },
+  ],
+  ratio: [
+    { term: "单位量", explanation: "先求 1 份、1 千米或 1 千克对应多少，再按数量放大。" },
+    { term: "比的份数", explanation: "a:b 表示总共 a+b 份，按比分配时先求每一份。" },
+    { term: "单位检查", explanation: "速度、单价和比例题要检查答案的单位是否与问题一致。" },
+  ],
+  "decimal-percent": [
+    { term: "百分数", explanation: "百分数表示‘每 100 份中有多少份’，例如 25% = 25/100 = 0.25。" },
+    { term: "折扣", explanation: "打八折表示支付原价的 80%，不是减少到原价的 20%。" },
+    { term: "连续变化", explanation: "先变化后再变化时，要把第二次变化作用在新的数量上。" },
+  ],
+  "angles-triangles": [
+    { term: "对顶角", explanation: "两条直线相交时，对顶角相等。" },
+    { term: "三角形内角和", explanation: "任意三角形的三个内角和都是 180°。" },
+    { term: "补角", explanation: "一条直线上的相邻角和为 180°，直角为 90°。" },
+  ],
+  "area-perimeter": [
+    { term: "周长", explanation: "周长是图形边界的总长度，单位通常是厘米、米等长度单位。" },
+    { term: "面积", explanation: "面积表示覆盖大小，单位是平方厘米、平方米等平方单位。" },
+    { term: "分割与补形", explanation: "复杂图形可以拆成熟悉图形，分别计算后相加或相减。" },
+  ],
+  statistics: [
+    { term: "平均数", explanation: "平均数 = 总和 ÷ 数据个数；加入新数据后，总和和个数都会变化。" },
+    { term: "中位数", explanation: "先排序，再取中间位置；数据个数为偶数时取中间两数的平均。" },
+    { term: "读图", explanation: "先看横轴、纵轴和单位，再比较数据的差值、总量和趋势。" },
+  ],
+  "counting-organized": [
+    { term: "分类计数", explanation: "把情况分成互不重叠的类别，再把各类数量相加。" },
+    { term: "乘法原理", explanation: "如果一步有 a 种选择，下一步有 b 种选择，总数是 a×b。" },
+    { term: "不重不漏", explanation: "列举时固定一个顺序或标准，避免同一种情况重复计算。" },
+  ],
+  "problem-solving": [
+    { term: "画图", explanation: "把文字条件放进线段图、表格或几何图形，减少漏读条件。" },
+    { term: "逆向思考", explanation: "从最后一步倒推，常适合处理还原、年龄和操作变化问题。" },
+    { term: "合理性检查", explanation: "完成计算后回到题目，检查大小、单位和是否满足全部条件。" },
+  ],
+};
+
+const chapterPrerequisites: Record<string, string[]> = {
+  "order-estimation": [],
+  exponents: ["order-estimation"],
+  "number-theory": ["order-estimation"],
+  fractions: ["order-estimation"],
+  algebra: ["fractions"],
+  decimals: ["order-estimation"],
+  ratio: ["fractions", "decimals"],
+  "decimal-percent": ["fractions", "decimals"],
+  "square-roots": ["exponents"],
+  "angles-triangles": ["fractions"],
+  "area-perimeter": ["fractions"],
+  "pythagorean-theorem": ["square-roots", "area-perimeter"],
+  statistics: ["decimals"],
+  "counting-organized": ["order-estimation"],
+  "problem-solving": ["order-estimation", "fractions"],
+};
+
 export const lessons: Lesson[] = [
   chapter(
     "order-estimation",
@@ -695,7 +775,12 @@ export const lessons: Lesson[] = [
     "AoPS Prealgebra 第15章：Problem-Solving Strategies",
     sourceLesson("work-backwards").exercises,
   ),
-].sort((left, right) => left.order - right.order);
+].sort((left, right) => left.order - right.order).map((lesson) => ({
+  ...lesson,
+  keyPoints: lesson.keyPoints ?? chapterKeyPoints[lesson.id],
+  prerequisites: chapterPrerequisites[lesson.id] ?? [],
+  checkpointExercises: chapterCheckpoints[lesson.id] ?? [],
+}));
 
 export const learningResources: LearningResource[] = [
   {
