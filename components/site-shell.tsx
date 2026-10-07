@@ -17,8 +17,8 @@ import { Badge } from "@/components/ui/badge";
 const navigation = [
   { label: "首页", icon: Home, href: "/" },
   { label: "学习路径", icon: GraduationCap, href: "/learn" },
+  { label: "练习中心", icon: Target, href: "/practice" },
   { label: "按年份", icon: FileText, href: "/years" },
-  { label: "专项练习", icon: Target, href: "/custom" },
   { label: "学习分析", icon: BarChart3, href: "/analysis" },
   { label: "错题本", icon: RotateCcw, href: "/mistakes" },
 ];
@@ -40,7 +40,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               8
             </span>
             <span className="truncate font-serif text-lg font-bold tracking-tight text-ink sm:text-xl">
-              AMC 8 中文真题练习
+              AMC 8 中文学习站
             </span>
           </Link>
           <Badge variant="outline" className="ml-auto hidden rounded-full px-3 py-1.5 text-xs sm:inline-flex">

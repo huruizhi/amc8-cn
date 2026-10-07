@@ -1,4 +1,5 @@
 import type { Topic } from "./questions";
+import { additionalLessons } from "./lessons-expanded";
 
 export type LessonOption = {
   label: "A" | "B" | "C" | "D";
@@ -11,6 +12,7 @@ export type LessonExercise = {
   options: LessonOption[];
   answer: LessonOption["label"];
   explanation: string;
+  level?: "基础" | "提升";
 };
 
 export type Lesson = {
@@ -47,7 +49,7 @@ const option = (label: LessonOption["label"], value: string): LessonOption => ({
   value,
 });
 
-export const lessons: Lesson[] = [
+const coreLessons: Lesson[] = [
   {
     id: "fractions",
     order: 1,
@@ -130,7 +132,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "patterns",
-    order: 3,
+    order: 6,
     title: "数列与规律：先观察，再计算",
     summary: "从简单数列找规律，练习把重复变化写成清楚的步骤。",
     level: "基础",
@@ -170,7 +172,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "geometry",
-    order: 4,
+    order: 12,
     title: "几何：从图形看数量",
     summary: "用画图、分割和周长面积关系解决 AMC 8 常见几何问题。",
     level: "基础",
@@ -210,7 +212,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "counting",
-    order: 5,
+    order: 16,
     title: "计数与概率：不重不漏",
     summary: "用列表、分类和乘法原理解决组合问题，避免漏数或重复。",
     level: "基础",
@@ -250,7 +252,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "algebra",
-    order: 6,
+    order: 7,
     title: "代数入门：让未知数说话",
     summary: "用字母表示未知量，学习把文字关系变成算式和方程。",
     level: "进阶",
@@ -290,7 +292,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "number-theory",
-    order: 7,
+    order: 9,
     title: "数论基础：整除和余数",
     summary: "从倍数、因数和余数开始，培养 AMC 8 常见的数字观察能力。",
     level: "进阶",
@@ -330,7 +332,7 @@ export const lessons: Lesson[] = [
   },
   {
     id: "problem-solving",
-    order: 8,
+    order: 21,
     title: "解题策略：读题、画图、检查",
     summary: "把计算方法变成稳定的解题流程，学会在做错后找到原因。",
     level: "基础",
@@ -369,6 +371,210 @@ export const lessons: Lesson[] = [
     sourceFiles: ["第15讲 绝对值问题", "第16讲 地板函数", "第17讲 定义新运算"],
   },
 ];
+
+const extraExercises: Record<string, LessonExercise[]> = {
+  fractions: [
+    {
+      id: "fractions-3",
+      prompt: "12 个苹果的 1/3 是多少个？",
+      options: [option("A", "3"), option("B", "4"), option("C", "6"), option("D", "9")],
+      answer: "B",
+      explanation: "把 12 平均分成 3 份，每份是 12 ÷ 3 = 4。",
+    },
+    {
+      id: "fractions-4",
+      prompt: "下面哪个分数更大：5/6 还是 3/4？",
+      options: [option("A", "5/6"), option("B", "3/4"), option("C", "一样大"), option("D", "无法比较")],
+      answer: "A",
+      explanation: "通分后 5/6 = 10/12，3/4 = 9/12，所以 5/6 更大。",
+      level: "提升",
+    },
+    {
+      id: "fractions-5",
+      prompt: "2/3 的 18 是多少？",
+      options: [option("A", "6"), option("B", "9"), option("C", "12"), option("D", "15")],
+      answer: "C",
+      explanation: "18 ÷ 3 = 6，6 × 2 = 12。",
+    },
+  ],
+  ratio: [
+    {
+      id: "ratio-3",
+      prompt: "红球和蓝球的数量比是 2:5，一共有 28 个球。红球有多少个？",
+      options: [option("A", "8"), option("B", "10"), option("C", "12"), option("D", "20")],
+      answer: "A",
+      explanation: "总份数 7，每份 4 个，红球是 2 × 4 = 8 个。",
+    },
+    {
+      id: "ratio-4",
+      prompt: "甲、乙两数的比是 4:7，甲是 12，乙是多少？",
+      options: [option("A", "18"), option("B", "21"), option("C", "24"), option("D", "28")],
+      answer: "B",
+      explanation: "4 份对应 12，所以每份 3；乙有 7 × 3 = 21。",
+      level: "提升",
+    },
+    {
+      id: "ratio-5",
+      prompt: "果汁和水按 1:3 混合，做 16 杯饮料需要多少杯果汁？",
+      options: [option("A", "3"), option("B", "4"), option("C", "8"), option("D", "12")],
+      answer: "B",
+      explanation: "总份数 4，每份 16 ÷ 4 = 4 杯，果汁占 1 份。",
+    },
+  ],
+  patterns: [
+    {
+      id: "patterns-3",
+      prompt: "数列 1，4，9，16，…… 的下一项是多少？",
+      options: [option("A", "20"), option("B", "24"), option("C", "25"), option("D", "36")],
+      answer: "C",
+      explanation: "这些数依次是 1²、2²、3²、4²，下一项是 5² = 25。",
+    },
+    {
+      id: "patterns-4",
+      prompt: "数列 2，5，8，…… 的第 10 项是多少？",
+      options: [option("A", "26"), option("B", "29"), option("C", "30"), option("D", "32")],
+      answer: "B",
+      explanation: "第 n 项是 2 + (n - 1) × 3，第 10 项为 2 + 27 = 29。",
+      level: "提升",
+    },
+    {
+      id: "patterns-5",
+      prompt: "从 1 到 30 的数两两配对，(1,30)、(2,29)、……，一共有多少对？",
+      options: [option("A", "10"), option("B", "12"), option("C", "15"), option("D", "30")],
+      answer: "C",
+      explanation: "30 个数每两个一组，所以有 30 ÷ 2 = 15 对。",
+    },
+  ],
+  geometry: [
+    {
+      id: "geometry-3",
+      prompt: "一个三角形的两个角是 50° 和 60°，第三个角是多少？",
+      options: [option("A", "60°"), option("B", "70°"), option("C", "80°"), option("D", "90°")],
+      answer: "B",
+      explanation: "三角形内角和是 180°，第三角为 180 - 50 - 60 = 70°。",
+    },
+    {
+      id: "geometry-4",
+      prompt: "一个长方形面积是 48 平方厘米，长是 8 厘米，宽是多少？",
+      options: [option("A", "4"), option("B", "5"), option("C", "6"), option("D", "8")],
+      answer: "C",
+      explanation: "宽 = 面积 ÷ 长 = 48 ÷ 8 = 6 厘米。",
+      level: "提升",
+    },
+    {
+      id: "geometry-5",
+      prompt: "一个正方形周长为 28 厘米，它的面积是多少？",
+      options: [option("A", "28"), option("B", "49"), option("C", "56"), option("D", "196")],
+      answer: "B",
+      explanation: "边长为 28 ÷ 4 = 7，面积为 7 × 7 = 49。",
+    },
+  ],
+  counting: [
+    {
+      id: "counting-3",
+      prompt: "有 3 件上衣、2 条裤子和 2 双鞋，一套衣服有多少种搭配？",
+      options: [option("A", "7"), option("B", "12"), option("C", "14"), option("D", "24")],
+      answer: "B",
+      explanation: "按乘法原理计算：3 × 2 × 2 = 12。",
+    },
+    {
+      id: "counting-4",
+      prompt: "用数字 1、2、3 组成没有重复数字的两位数，一共有多少个？",
+      options: [option("A", "3"), option("B", "6"), option("C", "9"), option("D", "12")],
+      answer: "B",
+      explanation: "十位有 3 种选法，个位剩 2 种，共 3 × 2 = 6 个。",
+      level: "提升",
+    },
+    {
+      id: "counting-5",
+      prompt: "从 A、B、C、D 中选 1 人当队长、1 人当记录员，有多少种分工？",
+      options: [option("A", "4"), option("B", "6"), option("C", "8"), option("D", "12")],
+      answer: "D",
+      explanation: "队长有 4 种选法，记录员从剩下 3 人中选，共 4 × 3 = 12。",
+    },
+  ],
+  algebra: [
+    {
+      id: "algebra-3",
+      prompt: "2x + 3 = 13，x 等于多少？",
+      options: [option("A", "4"), option("B", "5"), option("C", "6"), option("D", "8")],
+      answer: "B",
+      explanation: "先减去 3 得 2x = 10，再除以 2 得 x = 5。",
+    },
+    {
+      id: "algebra-4",
+      prompt: "y ÷ 4 = 6，y 等于多少？",
+      options: [option("A", "10"), option("B", "20"), option("C", "24"), option("D", "30")],
+      answer: "C",
+      explanation: "除以 4 的逆运算是乘以 4，所以 y = 6 × 4 = 24。",
+    },
+    {
+      id: "algebra-5",
+      prompt: "一个数的 3 倍比它本身多 18，这个数是多少？",
+      options: [option("A", "6"), option("B", "8"), option("C", "9"), option("D", "12")],
+      answer: "C",
+      explanation: "3x - x = 18，所以 2x = 18，x = 9。",
+      level: "提升",
+    },
+  ],
+  "number-theory": [
+    {
+      id: "number-theory-3",
+      prompt: "18 和 24 的最大公因数是多少？",
+      options: [option("A", "3"), option("B", "6"), option("C", "8"), option("D", "12")],
+      answer: "B",
+      explanation: "18 的因数和 24 的因数中，最大的共同因数是 6。",
+    },
+    {
+      id: "number-theory-4",
+      prompt: "下面哪个数是质数？",
+      options: [option("A", "21"), option("B", "27"), option("C", "29"), option("D", "33")],
+      answer: "C",
+      explanation: "29 只有 1 和 29 两个因数，是质数。",
+      level: "提升",
+    },
+    {
+      id: "number-theory-5",
+      prompt: "1 到 20 中有多少个数是 3 的倍数？",
+      options: [option("A", "5"), option("B", "6"), option("C", "7"), option("D", "8")],
+      answer: "B",
+      explanation: "3、6、9、12、15、18，一共有 6 个。",
+    },
+  ],
+  "problem-solving": [
+    {
+      id: "problem-solving-3",
+      prompt: "一道题的答案比估算值大很多时，第一步应该检查什么？",
+      options: [option("A", "单位和计算步骤"), option("B", "只看最后一位"), option("C", "直接换答案"), option("D", "跳过这题")],
+      answer: "A",
+      explanation: "数量级差异通常来自单位、抄题或计算步骤，需要按顺序检查。",
+    },
+    {
+      id: "problem-solving-4",
+      prompt: "有 3 种颜色的帽子和 2 种颜色的围巾，列举搭配时最清楚的方法是什么？",
+      options: [option("A", "随便试几个"), option("B", "按帽子颜色分组列出"), option("C", "只看围巾"), option("D", "先猜总数")],
+      answer: "B",
+      explanation: "固定一个分类标准逐组列出，可以避免遗漏和重复。",
+      level: "提升",
+    },
+    {
+      id: "problem-solving-5",
+      prompt: "把复杂图形拆成几个熟悉的小图形，主要是为了什么？",
+      options: [option("A", "让图变漂亮"), option("B", "分别计算后再合并"), option("C", "改变题目条件"), option("D", "减少已知量")],
+      answer: "B",
+      explanation: "分割后可以使用熟悉的面积或周长公式，再把结果相加或相减。",
+    },
+  ],
+};
+
+const completedCoreLessons = coreLessons.map((lesson) => ({
+  ...lesson,
+  exercises: [...lesson.exercises, ...(extraExercises[lesson.id] ?? [])],
+}));
+
+export const lessons: Lesson[] = [...completedCoreLessons, ...additionalLessons].sort(
+  (left, right) => left.order - right.order,
+);
 
 export const learningResources: LearningResource[] = [
   {

@@ -20,7 +20,7 @@ export default function LearnPage() {
         <div>
           <p className="mb-2 text-sm font-semibold text-teal">AMC 8 学习路径</p>
           <h1 className="font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">先学会方法，再去做真题</h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">每一课都包含知识点、例题分步讲解、基础练习和对应真题，适合按自己的节奏学习。</p>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">每一课都包含知识点、例题分步讲解、分层练习和对应真题，适合按自己的节奏学习。</p>
         </div>
         <Badge variant="outline" className="w-fit rounded-full px-3 py-1.5">四年级自学路线</Badge>
       </header>
@@ -36,13 +36,13 @@ export default function LearnPage() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-5">
             <div className="flex items-end justify-between"><span className="text-sm text-white/65">学习路径进度</span><strong className="font-serif text-3xl">{completed.length}/{lessons.length}</strong></div>
             <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-amber transition-all" style={{ width: `${percent}%` }} /></div>
-            <p className="mt-4 text-sm leading-6 text-white/65">完成每课的基础练习后，就可以标记本课完成。进度会保存在当前浏览器。</p>
+            <p className="mt-4 text-sm leading-6 text-white/65">完成每课的 5 道分层练习后，就可以标记本课完成。进度会保存在当前浏览器。</p>
           </div>
         </div>
       </section>
 
       <section className="mb-6">
-        <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-sm font-semibold text-teal">循序渐进</p><h2 className="mt-1 font-serif text-2xl font-bold text-ink">八个学习单元</h2></div><span className="text-sm text-muted-foreground">每课约 25–40 分钟</span></div>
+        <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-sm font-semibold text-teal">循序渐进</p><h2 className="mt-1 font-serif text-2xl font-bold text-ink">{lessons.length} 个学习单元</h2></div><span className="text-sm text-muted-foreground">每课约 25–45 分钟 · 每课 5 道练习</span></div>
         <div className="grid gap-4 md:grid-cols-2">
           {lessons.map((lesson) => {
             const isDone = Boolean(progress.lessons[lesson.id]?.completedAt);
@@ -54,7 +54,7 @@ export default function LearnPage() {
                     <div className="flex flex-wrap items-center gap-2"><h3 className="font-serif text-xl font-bold text-ink">{lesson.title}</h3><Badge variant="outline">{lesson.level}</Badge></div>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{lesson.summary}</p>
                     <div className="mt-4 flex flex-wrap gap-2">{lesson.concepts.map((concept) => <span key={concept} className="rounded-full bg-secondary px-2.5 py-1 text-xs text-muted-foreground">{concept}</span>)}</div>
-                    <div className="mt-5 flex items-center justify-between gap-3"><span className="text-xs text-muted-foreground">{lesson.minutes} 分钟 · {lesson.exercises.length} 道基础练习</span><Button asChild size="sm" variant={isDone ? "outline" : "default"}><Link href={`/learn/${lesson.id}`}>{isDone ? "复习本课" : "开始学习"}<ArrowRight className="size-3.5" /></Link></Button></div>
+                    <div className="mt-5 flex items-center justify-between gap-3"><span className="text-xs text-muted-foreground">{lesson.minutes} 分钟 · {lesson.exercises.length} 道分层练习</span><Button asChild size="sm" variant={isDone ? "outline" : "default"}><Link href={`/learn/${lesson.id}`}>{isDone ? "复习本课" : "开始学习"}<ArrowRight className="size-3.5" /></Link></Button></div>
                   </div>
                 </div>
               </article>

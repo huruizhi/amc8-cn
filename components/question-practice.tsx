@@ -48,6 +48,7 @@ type QuestionPracticeProps = {
   question: Question;
   publishedNumbers: number[];
   queue: { id: string; year: number; number: number }[];
+  queueLabel?: string;
 };
 
 export function QuestionPractice(props: QuestionPracticeProps) {
@@ -58,6 +59,7 @@ function QuestionPracticeView({
   question,
   publishedNumbers,
   queue,
+  queueLabel = "专项练习",
 }: QuestionPracticeProps) {
   const { progress, submit, reveal } = useProgress();
   const [selected, setSelected] = useState("");
@@ -87,7 +89,7 @@ function QuestionPracticeView({
         ? { year: question.year, number: publishedNumbers[index + 1] }
         : null;
   const queueParam = queue.length
-    ? `?queue=${queue.map((item) => item.id).join(",")}`
+    ? `?queue=${queue.map((item) => item.id).join(",")}&title=${encodeURIComponent(queueLabel)}`
     : "";
   const historyLabel = useMemo(() => {
     if (!record?.firstAttempt && !record?.viewedAnswerAt) return null;
@@ -292,7 +294,7 @@ function QuestionPracticeView({
               <div>
                 <p className="text-sm font-semibold text-teal">
                   {queueIndex >= 0
-                    ? `专项练习 ${queueIndex + 1} / ${queue.length}`
+                    ? `${queueLabel} ${queueIndex + 1} / ${queue.length}`
                     : `${question.year} AMC 8`}
                 </p>
                 <h1 className="mt-1 font-serif text-2xl font-bold text-ink sm:text-3xl">第 {question.number} 题</h1>

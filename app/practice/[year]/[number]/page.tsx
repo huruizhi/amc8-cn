@@ -8,13 +8,13 @@ export default async function PracticeQuestionPage({
   searchParams,
 }: {
   params: Promise<{ year: string; number: string }>;
-  searchParams: Promise<{ queue?: string }>;
+  searchParams: Promise<{ queue?: string; title?: string }>;
 }) {
   const { year: yearValue, number: numberValue } = await params;
   const year = Number(yearValue);
   const number = Number(numberValue);
   const question = getQuestion(year, number);
-  const { queue: queueValue } = await searchParams;
+  const { queue: queueValue, title: queueTitle } = await searchParams;
 
   if (!question) notFound();
 
@@ -35,6 +35,7 @@ export default async function PracticeQuestionPage({
         year: item.year,
         number: item.number,
       }))}
+      queueLabel={queueTitle ?? "专项练习"}
     />
   );
 }

@@ -86,7 +86,7 @@ export default function AnalysisPage() {
         <div>
           <p className="text-sm font-semibold text-teal-ink">学习路径</p>
           <h2 className="mt-1 font-serif text-xl font-bold text-ink">已完成 {completedLessons.length} / {lessons.length} 课</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">完成课程中的基础练习后再标记本课，方便家长了解孩子是否真正走完学习步骤。</p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">完成课程中的 5 道分层练习后再标记本课，方便家长了解孩子是否真正走完学习步骤。</p>
         </div>
         <Button asChild variant="outline" className="shrink-0 bg-white"><Link href="/learn">查看学习路径 <ArrowRight className="size-4" /></Link></Button>
       </section>

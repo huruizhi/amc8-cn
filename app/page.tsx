@@ -137,7 +137,7 @@ export default function HomePage() {
             <div>
               <p className="text-sm font-semibold text-teal-ink">四年级自学路线</p>
               <h2 className="mt-1 font-serif text-xl font-bold text-ink">{nextLesson.title}</h2>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">每课都有例题、分步讲解、基础练习和对应真题。已完成 {completedLessons.length} / {lessons.length} 课。</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">每课都有例题、分步讲解、分层练习和对应真题。已完成 {completedLessons.length} / {lessons.length} 课。</p>
             </div>
           </div>
           <Button asChild variant="outline" className="shrink-0 bg-white"><Link href={`/learn/${nextLesson.id}`}>进入学习路径 <ArrowRight className="size-4" /></Link></Button>
@@ -176,10 +176,10 @@ export default function HomePage() {
                 <ArrowRight className="size-5 text-teal transition-transform group-hover:translate-x-1" />
               </div>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                按主题、能力、难度和年份组合真题，优先练习未做过的内容。
+                每天一组混合练习，也可以按主题、能力、难度和年份组合真题。
               </p>
-              <Link href="/custom" className="mt-4 inline-flex text-sm font-semibold text-teal-ink">
-                设置筛选条件 →
+              <Link href="/practice" className="mt-4 inline-flex text-sm font-semibold text-teal-ink">
+                进入练习中心 →
               </Link>
             </div>
           </div>

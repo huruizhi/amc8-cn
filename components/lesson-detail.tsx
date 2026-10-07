@@ -88,7 +88,7 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
         <div className="mb-5 flex items-end justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-teal">第二步 · 试一试</p>
-            <h2 className="mt-1 font-serif text-2xl font-bold text-ink">基础练习</h2>
+            <h2 className="mt-1 font-serif text-2xl font-bold text-ink">分层练习</h2>
           </div>
           <span className="text-sm text-muted-foreground">已完成 {answeredCount} / {lesson.exercises.length}</span>
         </div>
@@ -96,9 +96,13 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
           {lesson.exercises.map((exercise, index) => {
             const isSubmitted = submitted[exercise.id];
             const isCorrect = answers[exercise.id] === exercise.answer;
+            const exerciseLevel = exercise.level ?? (index < 3 ? "基础" : "提升");
             return (
               <article key={exercise.id} className="rounded-2xl border border-border/80 bg-secondary/25 p-4 sm:p-5">
-                <p className="font-semibold leading-7 text-ink">{index + 1}. {exercise.prompt}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-semibold leading-7 text-ink">{index + 1}. {exercise.prompt}</p>
+                  <Badge variant="outline" className="shrink-0">{exerciseLevel}</Badge>
+                </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
                   {exercise.options.map((item) => (
                     <button
