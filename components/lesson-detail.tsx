@@ -45,7 +45,7 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
 
       <header className="mb-6 overflow-hidden rounded-[28px] border border-primary/10 bg-primary p-6 text-white shadow-[0_18px_50px_rgba(17,63,103,0.16)] sm:p-8">
         <div className="flex flex-wrap items-center gap-2 text-sm text-white/70">
-          <span>第 {lesson.order} 课</span>
+          <span>第 {lesson.order} 章</span>
           <span>·</span>
           <span>{lesson.minutes} 分钟</span>
           <Badge className="bg-white/10 text-white hover:bg-white/10">{lesson.level}</Badge>
@@ -61,7 +61,7 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
         <div className="flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white text-teal"><Lightbulb className="size-5" /></span>
           <div>
-            <h2 className="font-serif text-xl font-bold text-ink">这节课学会什么</h2>
+            <h2 className="font-serif text-xl font-bold text-ink">这一章学会什么</h2>
             <ul className="mt-3 grid gap-2 text-sm leading-6 text-muted-foreground sm:grid-cols-3">
               {lesson.goals.map((goal) => <li key={goal} className="flex gap-2"><span className="text-teal">✓</span>{goal}</li>)}
             </ul>
@@ -148,11 +148,11 @@ export function LessonDetail({ lesson }: { lesson: Lesson }) {
 
       <div className="flex flex-col gap-3 rounded-[24px] border border-primary/15 bg-primary p-5 text-white sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div>
-          <p className="font-semibold">完成本课后，学习路径会记住你的进度。</p>
+          <p className="font-semibold">完成本章后，学习路径会记住你的进度。</p>
           <p className="mt-1 text-sm text-white/70">你可以随时回来复习，不会影响真题的首次作答记录。</p>
         </div>
         <Button onClick={markComplete} disabled={!allAnswered || isComplete} className="shrink-0 bg-teal text-white hover:bg-teal/90">
-          {isComplete ? "本课已完成" : allAnswered ? "标记本课完成" : `还需完成 ${lesson.exercises.length - answeredCount} 题`}
+          {isComplete ? "本章已完成" : allAnswered ? "标记本章完成" : `还需完成 ${lesson.exercises.length - answeredCount} 题`}
         </Button>
       </div>
     </div>

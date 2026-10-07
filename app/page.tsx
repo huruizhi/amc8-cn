@@ -137,7 +137,7 @@ export default function HomePage() {
             <div>
               <p className="text-sm font-semibold text-teal-ink">四年级自学路线</p>
               <h2 className="mt-1 font-serif text-xl font-bold text-ink">{nextLesson.title}</h2>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">每课都有例题、分步讲解、分层练习和对应真题。已完成 {completedLessons.length} / {lessons.length} 课。</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">每章都有例题、分步讲解、分层练习和对应真题。已完成 {completedLessons.length} / {lessons.length} 章。</p>
             </div>
           </div>
           <Button asChild variant="outline" className="shrink-0 bg-white"><Link href={`/learn/${nextLesson.id}`}>进入学习路径 <ArrowRight className="size-4" /></Link></Button>

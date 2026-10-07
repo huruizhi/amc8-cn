@@ -1,5 +1,6 @@
 import type { Topic } from "./questions";
 import { additionalLessons } from "./lessons-expanded";
+import { prealgebraChapterLessons } from "./prealgebra-lessons";
 
 export type LessonOption = {
   label: "A" | "B" | "C" | "D";
@@ -516,6 +517,13 @@ const extraExercises: Record<string, LessonExercise[]> = {
       explanation: "3x - x = 18，所以 2x = 18，x = 9。",
       level: "提升",
     },
+    {
+      id: "algebra-6",
+      prompt: "不等式 x + 3 < 8 的解满足什么条件？",
+      options: [option("A", "x < 5"), option("B", "x > 5"), option("C", "x < 11"), option("D", "x > 11")],
+      answer: "A",
+      explanation: "两边同时减去 3，得到 x < 5。",
+    },
   ],
   "number-theory": [
     {
@@ -572,11 +580,130 @@ const completedCoreLessons = coreLessons.map((lesson) => ({
   exercises: [...lesson.exercises, ...(extraExercises[lesson.id] ?? [])],
 }));
 
-export const lessons: Lesson[] = [...completedCoreLessons, ...additionalLessons].sort(
-  (left, right) => left.order - right.order,
-);
+const sourceLessons = [...completedCoreLessons, ...additionalLessons, ...prealgebraChapterLessons];
+
+function sourceLesson(id: string): Lesson {
+  const lesson = sourceLessons.find((item) => item.id === id);
+  if (!lesson) {
+    throw new Error(`Missing source lesson: ${id}`);
+  }
+  return lesson;
+}
+
+function chapter(
+  sourceId: string,
+  order: number,
+  title: string,
+  summary: string,
+  sourceFile: string,
+  extraExercises: LessonExercise[] = [],
+): Lesson {
+  const source = sourceLesson(sourceId);
+  return {
+    ...source,
+    order,
+    title,
+    summary,
+    exercises: [...source.exercises, ...extraExercises],
+    sourceFiles: [...source.sourceFiles, sourceFile],
+  };
+}
+
+export const lessons: Lesson[] = [
+  chapter(
+    "order-estimation",
+    1,
+    "算术的性质",
+    "掌握运算顺序、估算和验算，为后续每一章建立可靠的计算基础。",
+    "AoPS Prealgebra 第1章：Properties of Arithmetic",
+  ),
+  sourceLesson("exponents"),
+  chapter(
+    "number-theory",
+    3,
+    "数论",
+    "从因数、倍数、质数、整除规则和余数入手，发现整数的结构与周期。",
+    "AoPS Prealgebra 第3章：Number Theory",
+    [...sourceLesson("divisibility").exercises, ...sourceLesson("remainders").exercises],
+  ),
+  chapter(
+    "fractions",
+    4,
+    "分数",
+    "理解分数的意义、运算和部分与整体的关系，先统一单位再解决问题。",
+    "AoPS Prealgebra 第4章：Fractions",
+  ),
+  chapter(
+    "algebra",
+    5,
+    "方程与不等式",
+    "用字母表示未知量，把文字关系写成方程或不等式，并用代入检查答案。",
+    "AoPS Prealgebra 第5章：Equations & Inequalities",
+  ),
+  sourceLesson("decimals"),
+  chapter(
+    "ratio",
+    7,
+    "比、换算与速率",
+    "用比、单位量和速率描述数量关系，处理比例、单价、速度和单位换算。",
+    "AoPS Prealgebra 第7章：Ratios, Conversions, & Rates",
+    sourceLesson("unit-rate").exercises,
+  ),
+  chapter(
+    "decimal-percent",
+    8,
+    "百分数",
+    "在分数、小数和百分数之间转换，理解折扣、增长和部分量。",
+    "AoPS Prealgebra 第8章：Percents",
+  ),
+  sourceLesson("square-roots"),
+  chapter(
+    "angles-triangles",
+    10,
+    "角",
+    "认识角度和三角形内角关系，用图形中的已知角推出未知角。",
+    "AoPS Prealgebra 第10章：Angles",
+  ),
+  chapter(
+    "area-perimeter",
+    11,
+    "周长与面积",
+    "掌握常见平面图形的周长和面积，并通过分割、补形解决综合问题。",
+    "AoPS Prealgebra 第11章：Perimeter & Area",
+  ),
+  sourceLesson("pythagorean-theorem"),
+  chapter(
+    "statistics",
+    13,
+    "数据与统计",
+    "从表格、图表和平均数中提取信息，用数据解释和检验结论。",
+    "AoPS Prealgebra 第13章：Data and Statistics",
+  ),
+  chapter(
+    "counting-organized",
+    14,
+    "计数",
+    "用分类、列表和乘法原理不重不漏地计数，并连接到简单概率。",
+    "AoPS Prealgebra 第14章：Counting",
+    sourceLesson("probability").exercises,
+  ),
+  chapter(
+    "problem-solving",
+    15,
+    "解题策略",
+    "练习画图、分类、逆向思考、估算和检查，把策略迁移到陌生题型。",
+    "AoPS Prealgebra 第15章：Problem-Solving Strategies",
+    sourceLesson("work-backwards").exercises,
+  ),
+].sort((left, right) => left.order - right.order);
 
 export const learningResources: LearningResource[] = [
+  {
+    title: "AoPS Prealgebra",
+    type: "补充教材",
+    description: "学习路径按本书目录重组；本网站提供原创中文梳理、练习和 AMC 8 真题链接，不替代原书内容。",
+    href: "https://artofproblemsolving.com/store/book/prealgebra",
+  },
   {
     title: "AMC 8 百日贯通课程",
     type: "课程",

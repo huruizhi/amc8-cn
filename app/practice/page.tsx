@@ -85,7 +85,7 @@ export default function PracticeHubPage() {
             <ul className="mt-4 space-y-3 text-sm leading-6 text-white/70">
               <li>1. 先独立思考，再提交答案。</li>
               <li>2. 做错后读完解析，用自己的话复述方法。</li>
-              <li>3. 仍然不熟的主题，回到学习路径复习对应课程。</li>
+              <li>3. 仍然不熟的主题，回到学习路径复习对应章节。</li>
             </ul>
           </div>
         </div>

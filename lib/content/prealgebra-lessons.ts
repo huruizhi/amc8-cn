@@ -1,0 +1,133 @@
+import type { Lesson, LessonExercise, LessonOption } from "./lessons";
+
+const option = (label: LessonOption["label"], value: string): LessonOption => ({ label, value });
+
+const exercise = (
+  id: string,
+  prompt: string,
+  values: string[],
+  answer: LessonOption["label"],
+  explanation: string,
+  level?: LessonExercise["level"],
+): LessonExercise => ({
+  id,
+  prompt,
+  options: values.map((value, index) => option((["A", "B", "C", "D"] as const)[index], value)),
+  answer,
+  explanation,
+  level,
+});
+
+const example = (title: string, prompt: string, steps: string[], answer: string) => ({
+  title,
+  prompt,
+  steps,
+  answer,
+});
+
+export const prealgebraChapterLessons: Lesson[] = [
+  {
+    id: "exponents",
+    order: 2,
+    title: "指数",
+    summary: "从平方和幂开始，理解重复乘法、指数规律以及数量级的变化。",
+    level: "基础",
+    minutes: 35,
+    topics: ["算术", "代数"],
+    skills: ["计算", "找规律"],
+    goals: ["理解幂的含义", "熟悉常见平方数", "会用同底数幂的简单规律"],
+    concepts: ["底数与指数", "平方", "幂的运算"],
+    example: example("同底数幂相乘", "3² × 3³ 等于多少？", [
+      "同底数相乘时，指数相加：3² × 3³ = 3⁵。",
+      "3⁵ = 3 × 3 × 3 × 3 × 3 = 243。",
+      "也可以先算 9 × 27，结果仍是 243。",
+    ], "243"),
+    exercises: [
+      exercise("exponents-1", "2³ 等于多少？", ["5", "6", "8", "9"], "C", "2³ = 2 × 2 × 2 = 8。"),
+      exercise("exponents-2", "5² 等于多少？", ["10", "15", "20", "25"], "D", "5² = 5 × 5 = 25。"),
+      exercise("exponents-3", "3² × 3³ 等于多少？", ["81", "162", "243", "729"], "C", "3² × 3³ = 3⁵ = 243。", "提升"),
+      exercise("exponents-4", "10⁰ 等于多少？", ["0", "1", "10", "100"], "B", "任何非零数的 0 次幂都是 1。"),
+      exercise("exponents-5", "下面哪个数更大？", ["2⁵", "5²", "两者相等", "无法比较"], "A", "2⁵ = 32，而 5² = 25，所以 2⁵ 更大。", "提升"),
+    ],
+    linkedQuestionIds: ["2023-06", "2022-09"],
+    sourceFiles: ["AoPS Prealgebra 第2章：Exponents"],
+  },
+  {
+    id: "decimals",
+    order: 6,
+    title: "小数",
+    summary: "掌握小数的位值、运算和分数转换，并用估算检查小数答案。",
+    level: "基础",
+    minutes: 30,
+    topics: ["算术"],
+    skills: ["计算", "估算"],
+    goals: ["会对齐小数点进行运算", "理解小数和分数的关系", "能判断小数答案的数量级"],
+    concepts: ["位值", "小数运算", "小数与分数"],
+    example: example("对齐小数点", "1.2 + 0.35 等于多少？", [
+      "把 1.2 写成 1.20，使两个小数的小数点对齐。",
+      "1.20 + 0.35 = 1.55。",
+      "结果应在 1 和 2 之间，可以用估算检查。",
+    ], "1.55"),
+    exercises: [
+      exercise("decimals-1", "1.2 + 0.35 等于多少？", ["1.25", "1.45", "1.55", "1.65"], "C", "小数点对齐后相加：1.20 + 0.35 = 1.55。"),
+      exercise("decimals-2", "3.6 ÷ 0.6 等于多少？", ["0.6", "6", "60", "600"], "B", "3.6 ÷ 0.6 = 36 ÷ 6 = 6。"),
+      exercise("decimals-3", "0.75 写成最简分数是多少？", ["1/4", "1/2", "3/4", "4/5"], "C", "0.75 = 75/100 = 3/4。"),
+      exercise("decimals-4", "2.5 × 10 等于多少？", ["0.25", "2.5", "25", "250"], "C", "乘以 10，小数点向右移动一位，得到 25。"),
+      exercise("decimals-5", "3.46 四舍五入到十分位是多少？", ["3.4", "3.5", "3.46", "3.6"], "B", "百分位是 6，所以十分位的 4 进为 5。"),
+    ],
+    linkedQuestionIds: ["2024-02", "2023-03"],
+    sourceFiles: ["AoPS Prealgebra 第6章：Decimals"],
+  },
+  {
+    id: "square-roots",
+    order: 9,
+    title: "平方根",
+    summary: "从完全平方数出发，理解平方根并用它解决边长、面积和估值问题。",
+    level: "进阶",
+    minutes: 30,
+    topics: ["算术", "代数"],
+    skills: ["计算", "估算"],
+    goals: ["熟悉常见完全平方数", "理解平方与平方根互为逆运算", "能估计非完全平方数的平方根"],
+    concepts: ["平方根", "完全平方数", "平方与逆运算"],
+    example: example("由面积求边长", "正方形面积是 64 平方厘米，边长是多少？", [
+      "正方形面积 = 边长 × 边长，也就是边长的平方。",
+      "因为 8² = 64，所以 64 的平方根是 8。",
+      "边长取正值，因此答案是 8 厘米。",
+    ], "8 厘米"),
+    exercises: [
+      exercise("square-roots-1", "√49 等于多少？", ["6", "7", "8", "9"], "B", "因为 7² = 49，所以 √49 = 7。"),
+      exercise("square-roots-2", "√81 等于多少？", ["7", "8", "9", "10"], "C", "因为 9² = 81，所以 √81 = 9。"),
+      exercise("square-roots-3", "√50 在哪两个整数之间？", ["5 和 6", "6 和 7", "7 和 8", "8 和 9"], "C", "49 < 50 < 64，所以 7 < √50 < 8。", "提升"),
+      exercise("square-roots-4", "(√9)² 等于多少？", ["1", "3", "6", "9"], "D", "√9 = 3，再平方得到 9。"),
+      exercise("square-roots-5", "正方形面积为 64 平方厘米，边长是多少？", ["4 厘米", "6 厘米", "8 厘米", "16 厘米"], "C", "边长 = √64 = 8 厘米。"),
+    ],
+    linkedQuestionIds: ["2024-04", "2023-06"],
+    sourceFiles: ["AoPS Prealgebra 第9章：Square Roots"],
+  },
+  {
+    id: "pythagorean-theorem",
+    order: 12,
+    title: "勾股定理",
+    summary: "用直角三角形三边关系求长度，把几何图形转化为可计算的关系式。",
+    level: "进阶",
+    minutes: 35,
+    topics: ["几何"],
+    skills: ["空间想象", "建模", "计算"],
+    goals: ["识别直角三角形的斜边", "会使用 a²+b²=c²", "能用常见勾股数组检查答案"],
+    concepts: ["直角三角形", "斜边", "勾股定理"],
+    example: example("3-4-5 三角形", "直角三角形两条直角边长为 3 和 4，斜边是多少？", [
+      "勾股定理是 3² + 4² = c²。",
+      "9 + 16 = 25，所以 c² = 25。",
+      "斜边取正值，c = 5。",
+    ], "5"),
+    exercises: [
+      exercise("pythagorean-1", "直角三角形两直角边为 3 和 4，斜边是多少？", ["5", "6", "7", "8"], "A", "3² + 4² = 9 + 16 = 25 = 5²。"),
+      exercise("pythagorean-2", "直角三角形两直角边为 6 和 8，斜边是多少？", ["9", "10", "12", "14"], "B", "6² + 8² = 36 + 64 = 100 = 10²。"),
+      exercise("pythagorean-3", "斜边为 13，一条直角边为 5，另一条直角边是多少？", ["8", "10", "12", "14"], "C", "另一边平方 = 13² - 5² = 169 - 25 = 144，所以是 12。", "提升"),
+      exercise("pythagorean-4", "下面哪组数可以组成直角三角形？", ["2, 3, 4", "3, 4, 5", "4, 5, 6", "5, 6, 7"], "B", "3² + 4² = 5²，符合勾股定理。"),
+      exercise("pythagorean-5", "直角三角形两直角边为 5 和 12，斜边是多少？", ["11", "12", "13", "17"], "C", "5² + 12² = 25 + 144 = 169 = 13²。"),
+    ],
+    linkedQuestionIds: ["2026-03", "2019-04"],
+    sourceFiles: ["AoPS Prealgebra 第12章：Pythagorean Theorem"],
+  },
+];
